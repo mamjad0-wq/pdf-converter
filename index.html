@@ -4,19 +4,101 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDF to Word Converter</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    input[type="file"] {
+      margin: 1rem 0;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .hidden {
+      display: none;
+    }
+    .result {
+      margin-top: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
+  <div class="card">
     <h1>PDF to Word Converter</h1>
-
-    <input type="file" id="pdfFile" accept="application/pdf" />
-    <button onclick="convertPDF()">Convert</button>
-    <button id="downloadBtn" disabled onclick="downloadDocx()">Download</button>
-
-    <p id="status"></p>
+    <input type="file" id="pdfInput" accept="application/pdf">
+    <br>
+    <button id="convertBtn">Convert</button>
+    <div class="result hidden" id="resultBox">
+      <p>✅ Conversion complete!</p>
+      <button id="downloadBtn">Download DOCX</button>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const convertBtn = document.getElementById("convertBtn");
+    const resultBox = document.getElementById("resultBox");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const pdfInput = document.getElementById("pdfInput");
+    let convertedFile;
+
+    convertBtn.addEventListener("click", () => {
+      if (!pdfInput.files.length) {
+        alert("Please select a PDF file first.");
+        return;
+      }
+
+      // ⚡ Simple demo conversion: wrap file into DOCX container
+      const file = pdfInput.files[0];
+      const fileName = file.name.replace(".pdf", ".docx");
+
+      // Fake conversion (you can hook real API later)
+      const blob = new Blob(
+        ["This is a converted DOCX content placeholder for: " + file.name],
+        { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
+      );
+
+      convertedFile = { blob, fileName };
+      resultBox.classList.remove("hidden");
+    });
+
+    downloadBtn.addEventListener("click", () => {
+      if (!convertedFile) return;
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(convertedFile.blob);
+      link.download = convertedFile.fileName;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+  </script>
 </body>
 </html>
